@@ -7,27 +7,27 @@ metadata:
   labels:
     name:  API
     app:  ip-geolocation-api
-  spec:
-    replicas: 2
-    selector:
-      matchLabels:
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ip-geolocation-api
+      name: API
+  template:
+    metadata:
+      labels:
         app: ip-geolocation-api
         name: API
-    template:
-      metadata:
-        labels:
-          app: ip-geolocation-api
-          name: API
-    spec:
-      containers:
-        - image:  fujikomalan/k8s-ipgeolocation-api:v1
-          name: ip-geolocation-api
-          ports:
-            - containerPort: 8080  
-          envFrom:
-            - configMapRef:
-                name: ipgeolocation--api-config
-            - secretRef:
-                name: ipgeolocation--api-secret
+  spec:
+    containers:
+      - image:  fujikomalan/k8s-ipgeolocation-api:v1
+        name: ip-geolocation-api
+        ports:
+          - containerPort: 8080  
+        envFrom:
+          - configMapRef:
+              name: ipgeolocation--api-config
+          - secretRef:
+              name: ipgeolocation--api-secret
 
 
