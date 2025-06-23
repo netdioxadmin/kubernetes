@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ipgeolocation--api-configmap
+  name: ipgeolocation-frontend-configmap
   namespace: ipgeolocation
 data:
   API_SERVER: "ip-geolocation-api-service"
