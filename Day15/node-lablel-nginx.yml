@@ -11,4 +11,4 @@ spec:
       ports:
         - containerPort: 80
   nodeSelector:
-    disk=nvme
+    disk: nvme
