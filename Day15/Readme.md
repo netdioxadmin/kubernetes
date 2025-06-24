@@ -1,63 +1,70 @@
-# Node Labels
-To get node labels
-``` kubectl get nodes --show-labels```
+🚀 Understanding Node Labels in Kubernetes
 
-Output
-```NAME               STATUS   ROLES           AGE   VERSION    LABELS
-master.vaves.in    Ready    control-plane   8d    v1.30.13   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=master.vaves.in,kubernetes.io/os=linux,node-role.kubernetes.io/control-plane=,node.kubernetes.io/exclude-from-external-load-balancers=
-worker1.vaves.in   Ready    <none>          8d    v1.30.13   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=worker1.vaves.in,kubernetes.io/os=linux
-worker2.vaves.in   Ready    <none>          8d    v1.30.13   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=worker2.vaves.in,kubernetes.io/os=linux
+Node labels are a powerful mechanism in Kubernetes to control where your pods run. Here's a quick walkthrough I did during one of my recent sessions 👇
+
+🔍 Viewing Existing Node Labels
+
+```
+kubectl get nodes --show-labels
 ```
 
-## To add our on Label to a node
+Sample output:
 
-- Here I am applying disk label to each node.
-
-``` kubectl label node worker1.vaves.in disk=nvme```
-``` kubectl label node worker2.vaves.in disk=hdd```
-
-### Printing Labels
-``` NAME               STATUS   ROLES           AGE   VERSION    LABELS
-master.vaves.in    Ready    control-plane   8d    v1.30.13   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=master.vaves.in,kubernetes.io/os=linux,node-role.kubernetes.io/control-plane=,node.kubernetes.io/exclude-from-external-load-balancers=
-worker1.vaves.in   Ready    <none>          8d    v1.30.13   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,disk=nvme,kubernetes.io/arch=amd64,kubernetes.io/hostname=worker1.vaves.in,kubernetes.io/os=linux
-worker2.vaves.in   Ready    <none>          8d    v1.30.13   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,disk=hdd,kubernetes.io/arch=amd64,kubernetes.io/hostname=worker2.vaves.in,kubernetes.io/os=linux   
+```NAME               STATUS   ROLES           VERSION    LABELS
+master.vaves.in    Ready    control-plane   v1.30.13   ... node-role.kubernetes.io/control-plane= ...
+worker1.vaves.in   Ready    <none>          v1.30.13   ... kubernetes.io/hostname=worker1.vaves.in ...
+worker2.vaves.in   Ready    <none>          v1.30.13   ... kubernetes.io/hostname=worker2.vaves.in ...
 ```
-Here `disk=hdd` is applied to worker2 and `disk=nvme` to worker1 
 
-### Now We are going to create a node in work1 with label. 
-
-### Check nginx.yml in file
-
-```  kubectl get pods -o wide -n ipgeolocation ```
-
-#### Output
-
-``` 
-nginx                                      1/1     Running   0             40s   10.244.1.7   worker1.vaves.in   <none>           <none>
+🏷️ Adding Custom Labels to Nodes
+To classify nodes based on disk type, I labeled them as follows:
 ```
-Here you can see that the node is running in worker one since I have applied the nodeselector and `nvme` and the label is set to node. 
-
-### How to remove the label
-
-``` 
-kubectl label node worker1.vaves.in disk-
-kubectl label node worker2.vaves.in disk-
+kubectl label node worker1.vaves.in disk=nvme
+kubectl label node worker2.vaves.in disk=hdd
 ```
-After this listing labels
-```
-[root@master Day15]# kubectl get nodes --show-labels
-NAME               STATUS   ROLES           AGE   VERSION    LABELS
-master.vaves.in    Ready    control-plane   8d    v1.30.13   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=master.vaves.in,kubernetes.io/os=linux,node-role.kubernetes.io/control-plane=,node.kubernetes.io/exclude-from-external-load-balancers=
-worker1.vaves.in   Ready    <none>          8d    v1.30.13   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=worker1.vaves.in,kubernetes.io/os=linux
-worker2.vaves.in   Ready    <none>          8d    v1.30.13   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=worker2.vaves.in,kubernetes.io/os=linux
-```
-Here we can see the lables are nolonger available there. But what happens to the pod? Lets check.
 
+✅ After applying, labels are visible:
+```
+worker1.vaves.in ... disk=nvme ...
+worker2.vaves.in ... disk=hdd ...
+```
+
+📦 Scheduling a Pod Using nodeSelector
+I scheduled an NGINX pod using a nodeSelector to target the nvme disk node. Verifying the pod:
 ```
 kubectl get pods -o wide -n ipgeolocation
 ```
-```
-nginx                                      1/1     Running   0             10m   10.244.1.7   worker1.vaves.in   <none>           <none>
-```
 
-You can see the pod is still running. This is due to the fact that we have run normal pod not a deployment. Also the dicition to go to which pod is made when pode is being scheduled, not after running or pod is up. 
+Output:
+```
+nginx   1/1 Running   10.244.1.7   worker1.vaves.in
+
+The pod landed on worker1.vaves.in as expected. ✅
+```
+🧹 Removing Node Labels
+```
+kubectl label node worker1.vaves.in disk-
+kubectl label node worker2.vaves.in disk-
+```
+Checking again:
+```
+kubectl get nodes --show-labels
+```
+The custom disk labels are gone.
+
+🤔 But What Happens to the Pod?
+Even after removing the labels, the pod remains running:
+```
+kubectl get pods -o wide -n ipgeolocation
+
+nginx   1/1 Running   10.244.1.7   worker1.vaves.in
+```
+Why? Because this is a standalone pod, not managed by a Deployment. Kubernetes schedules pods at creation based on the labels at that time — it doesn’t re-evaluate if labels change after the pod is scheduled.
+
+🧠 Takeaway:
+
+    Use labels to manage pod placement smartly.
+
+    Once scheduled, pods don’t migrate automatically when labels are removed or changed — unless managed by higher-level controllers.
+
+If you're working with Kubernetes, mastering node labeling and scheduling logic is key to building smart, efficient clusters.
