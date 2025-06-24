@@ -1,4 +1,4 @@
-# Node Labesl
+# Node Labels
 To get node labels
 ``` kubectl get nodes --show-labels```
 
