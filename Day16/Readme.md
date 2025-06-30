@@ -83,4 +83,4 @@ spec:
 
         The value of imagePullPolicy.
 
-References
+### Note: Endpoint ip to name resolution happens only inside pods, not from nodes. 
