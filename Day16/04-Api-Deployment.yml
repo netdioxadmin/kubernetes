@@ -30,5 +30,13 @@ spec:
                 name: ipgeolocation--api-config
             - secretRef:
                 name: ipgeolocation--api-secret
-
+          readinessProbe:
+            httpGet: 
+              path: /readiness
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 3
+            timeoutSeconds: 2
 
