@@ -8,7 +8,7 @@ metadata:
     name:  API
     app:  ip-geolocation-api
 spec:
-  replicas: 2
+  replicas: 4 
   selector:
     matchLabels:
       app: ip-geolocation-api
@@ -22,6 +22,7 @@ spec:
       containers:
         - image:  fujikomalan/k8s-ipgeolocation-api:v1
           name: ip-geolocation-api
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080  
           envFrom:
