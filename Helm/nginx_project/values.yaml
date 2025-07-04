@@ -1,0 +1,6 @@
+---
+podname: "nginx-pod"
+container_name: "nginx-container"
+image: "nginx"
+image_version: "1.10"
+containerport: 80 #need to be integer
