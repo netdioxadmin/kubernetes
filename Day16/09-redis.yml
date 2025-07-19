@@ -3,7 +3,7 @@
   kind: Deployment
   metadata:
     name: Redis
-    namespace: redis
+    namespace: ipgeolocation
     labels:
       app: redis
       name: Redis
