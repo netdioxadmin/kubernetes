@@ -1,0 +1,6 @@
+---
+apiversion: v1
+name: nginx-project
+description: nginx project chart
+version: 1.0
+appversion: 1.0
