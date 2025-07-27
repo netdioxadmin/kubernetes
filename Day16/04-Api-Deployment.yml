@@ -39,4 +39,13 @@ spec:
             failureThreshold: 3
             successThreshold: 3
             timeoutSeconds: 2
+          livenessProbe:
+            httpGet: 
+              path: /liveness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10 
+            failureThreshold: 3
+            successThreshold: 3
+            
 
