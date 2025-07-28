@@ -1,0 +1,28 @@
+---
+apiVersion: app/v1
+kind: DaemonSet
+metadata:
+  name: nginx-daemonset
+  namespace: ipgeolocation
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx  
+    spec:
+      hostNetwork: true
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: nginx-config-volume
+          configMapRef:
+            name: nginx-config-map
