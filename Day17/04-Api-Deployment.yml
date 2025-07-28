@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:  ip-geolocation--api
+  name:  ip-geolocation-api
   namespace: ipgeolocation
   labels:
     name:  API
