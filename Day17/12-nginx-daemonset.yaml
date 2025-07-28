@@ -24,5 +24,5 @@ spec:
               mountPath: /etc/nginx/conf.d
       volumes:
         - name: nginx-config-volume
-          configMapRef:
+          configMap:
             name: nginx-config-map
