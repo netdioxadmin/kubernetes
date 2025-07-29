@@ -13,7 +13,7 @@ spec:
         app: nginx  
     spec:
       hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      dnsPolicy: ClusterFirstWithHostNet   # 👈 Fix
       containers:
         - name: nginx
           image: nginx:latest
