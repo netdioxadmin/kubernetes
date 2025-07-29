@@ -5,12 +5,12 @@ metadata:
   name: ip-geolocation-frontend-service
   namespace: ipgeolocation
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: ip-geolocation-frontend
     name: Frontend
   ports:
     - protocol: TCP
-      port: 8080
+      port: 80
       targetPort: 8080
-      nodePort: 30081
+#     nodePort: 30081
