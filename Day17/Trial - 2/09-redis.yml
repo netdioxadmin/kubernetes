@@ -1,0 +1,27 @@
+---
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: redis
+    namespace: ipgeolocation
+    labels:
+      app: redis
+      name: Redis
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: redis
+        name: Redis
+    template:
+      metadata:
+        labels:
+          app: redis
+          name: Redis 
+      spec:
+        containers:
+          - name: redis
+            image: redis:latest
+            ports:
+              - containerPort: 6379
+            imagePullPolicy: Always

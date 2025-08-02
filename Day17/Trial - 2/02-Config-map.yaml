@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ipgeolocation--api-config
+  namespace: ipgeolocation
+data: 
+  REDIS_PORT: "6379"
+  REDIS_HOST: "redis-service"
+  APP_PORT: "8080"
+  READINESS_DELAY_SEC: "60"

@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  ip-geolocation-api
+  namespace: ipgeolocation
+  labels:
+    name:  API
+    app:  ip-geolocation-api
+spec:
+  replicas: 4 
+  selector:
+    matchLabels:
+      app: ip-geolocation-api
+      name: API
+  template:
+    metadata:
+      labels:
+        app: ip-geolocation-api
+        name: API
+    spec:
+      containers:
+        - image:  fujikomalan/k8s-ipgeolocation-api:v1
+          name: ip-geolocation-api
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080  
+          envFrom:
+            - configMapRef:
+                name: ipgeolocation--api-config
+            - secretRef:
+                name: ipgeolocation--api-secret
+          readinessProbe:
+            httpGet: 
+              path: /readiness
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 3
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet: 
+              path: /liveness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10 
+            failureThreshold: 3
+            successThreshold: 1
+            
+

@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ip-geolocation-frontend
+  namespace: ipgeolocation
+  labels:
+    name: Frontend
+    app: ip-geolocation-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ip-geolocation-frontend
+      name: Frontend
+  template:
+    metadata:
+      labels:
+        app: ip-geolocation-frontend
+        name: Frontend
+    spec:
+      containers:
+        - image: fujikomalan/k8s-ipgeolocation-frontend:v1
+          name: ip-geolocation-frontend
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: ipgeolocation-frontend-configmap
